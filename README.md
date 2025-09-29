@@ -34,12 +34,14 @@
 (그래프 이미지)
 
 ## Directory Structure
+```
 ├── data/                  # 스타트업 PDF 문서
 ├── agents/                # 평가 기준별 Agent 모듈
 ├── prompts/               # 프롬프트 템플릿
 ├── outputs/               # 평가 결과 저장
 ├── app.py                 # 실행 스크립트
 └── README.md
+```
 
 ## Contributors 
 
