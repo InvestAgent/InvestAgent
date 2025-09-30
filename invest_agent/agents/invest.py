@@ -41,7 +41,7 @@ WEIGHTS = {
     "deal": 0.10,
 }
 
-invest_CUTOFF = 65.0
+INVEST_CUTOFF = 65.0
 
 RISK_PENALTY_BUCKETS = [
     (20.0, 5.0),
@@ -654,7 +654,7 @@ def investment_decision(state: GraphState) -> GraphState:
         # status를 workflow 호환 label로 변환
         status = decision_output.get("status", "fail")
         if status == "invest":
-            if decision_output.get("total_score", 0) >= 70:
+            if decision_output.get("total_score", 0) >= 50:
                 label = "recommend"
             else:
                 label = "invest_conditional"

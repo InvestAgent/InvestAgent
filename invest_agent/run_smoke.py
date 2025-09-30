@@ -10,7 +10,13 @@ class ReportConfig(SimpleNamespace):
 if __name__ == "__main__":
     init_state = {
         "query": "한국 생성형 AI 스타트업 알려줘!",
-        
+        "report_config": {
+        "version": "v1.0",
+        "author": "투자분석팀",
+        "renderer": "playwright",   # or "pdfkit" / "none"
+        "out_dir": "./output",
+        "wkhtmltopdf_path": None
+    }
     }
     out = app.invoke(
         init_state,

@@ -63,7 +63,7 @@ def build_app():
         "investment_decision",
         invest_or_hold,
         {
-            "pass": "report_writer",
+            "invest": "report_writer",
             "hold_or_next": "advance_or_finish",
             "reject_next": "advance_or_finish",
             "done": END,
