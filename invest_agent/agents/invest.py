@@ -31,7 +31,7 @@ DEFAULT_MODEL = "gpt-4o"
 
 # ========= Schema & Constants =========
 
-DecisionStatus = Literal["pass", "fail"]
+DecisionStatus = Literal["invest", "fail"]
 
 WEIGHTS = {
     "market": 0.35,
@@ -41,7 +41,7 @@ WEIGHTS = {
     "deal": 0.10,
 }
 
-PASS_CUTOFF = 65.0
+invest_CUTOFF = 65.0
 
 RISK_PENALTY_BUCKETS = [
     (20.0, 5.0),
@@ -572,10 +572,10 @@ def aggregate_scores(state: Dict[str, Any]) -> Dict[str, Any]:
     adjusted = total * (1 - penalty_pct / 100.0)
 
     if adjusted >= 50:
-        status = "pass"
+        status = "invest"
         final_note = "투자 권고"
     elif adjusted >= 30:
-        status = "pass"
+        status = "invest"
         final_note = "조건부 투자 권고"
     else:
         status = "fail"
@@ -653,7 +653,7 @@ def investment_decision(state: GraphState) -> GraphState:
         
         # status를 workflow 호환 label로 변환
         status = decision_output.get("status", "fail")
-        if status == "pass":
+        if status == "invest":
             if decision_output.get("total_score", 0) >= 70:
                 label = "recommend"
             else:
