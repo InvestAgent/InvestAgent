@@ -38,7 +38,7 @@
 * Tavily, GOOGLE_CES를 통해 검색 자동 보강 → TAM, CAGR, 수요 요인 채움
 * 컨텍스트 부족 시 합리적 추정치 명시
 ---
-### :boxing_glove: 경쟁사 비교 에이전트
+### 🥊 경쟁사 비교 에이전트
 **목적:** 경쟁 환경 분석 및 차별화 전략 도출
 * 벡터 DB + 웹 검색으로 경쟁사 4곳 자동 발굴 (스타트업 2곳, 대기업 2곳)
 * 정량 평가 지표
@@ -46,6 +46,42 @@
   * :bulb: 차별성 (Differentiation)
   * :european_castle: 진입장벽 (Moat)
 * VC 관점의 SWOT 분석 생성
+
+* #### 🔄 동작 흐름 (6단계)
+1. **[입력] Tech Agent + Market Agent 결과**  
+   ↓  
+2. **initialize_state** – 입력 데이터 파싱 및 State 초기화  
+   ↓  
+3. **search_competitors_hybrid** – 벡터 DB 검색(스타트업 2곳) + 부족 시 웹 검색 보완 + 대기업 2곳 선정  
+   ↓  
+4. **web_research_competitors** – 각 경쟁사별 제품·고객·투자 등 리서치  
+   ↓  
+5. **analyze_competitive_positioning** – Overlap, Differentiation, Moat 정량 평가 + Positioning 한 줄 요약  
+   ↓  
+6. **generate_swot_analysis** – VC 관점 SWOT 생성 (정량 근거 포함)  
+   ↓  
+7. **finalize_output** – JSON 형태 최종 결과 출력  
+
+#### 🔍 경쟁사 발굴 전략 (Hybrid + RAG)
+- **Vector DB (FAISS)**  
+  - HuggingFace BGE-base-en-v1.5 임베딩 기반  
+  - 사전 구축된 스타트업 DB에서 유사 기업 2곳 검색  
+- **웹 검색 보완 (RAG Retrieval)**  
+  - Tavily Search API + GPT-4o-mini 활용  
+  - Vector DB 부족 시 자동 실행, 중복 기업 제외  
+- **대기업 후보군**  
+  - OpenAI, Google, Meta, Microsoft, Adobe, Amazon, Anthropic, Stability AI  
+  - GPT-4o-mini reasoning 기반 2곳 선정  
+
+#### 📝 SWOT 분석 생성 원칙
+- **투자 판단 중심** (VC 의사결정 활용 목적)  
+- **정량적 근거 필수** (추상적 표현 금지, 수치 기반)  
+- **각 항목 5~7개 작성**  
+
+**Strengths (강점)** – 경쟁사 대비 우월한 점, 정량 근거 포함  
+**Weaknesses (약점)** – 구조적 리스크, 개선 어려움  
+**Opportunities (기회)** – 시장 성장, 틈새 기회, 파트너십 가능성  
+**Threats (위협)** – 대기업 진입, 규제, 기술 commoditization 리스크  
 ---
 ## :rocket: Startup Investment Decision Engine
 정량 지표는 계산, 정성 평가는 LLM 해석으로 처리하여 스타트업 투자 판단을 자동화하는 엔진입니다.
