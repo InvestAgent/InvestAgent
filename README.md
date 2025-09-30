@@ -142,7 +142,6 @@ Final Score = Σ(영역 점수 × 가중치) – Risk Penalty
 └── README.md
 ```
 
----
 
 ---
 
