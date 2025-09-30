@@ -303,7 +303,17 @@ def report_writer(state: Dict[str, Any]) -> Dict[str, Any]:
 
     # 14) HTML/PDF
     html = render_html(final_json, meta)
-    cfg: ReportConfig = state.get("report_config") or ReportConfig()
+    cfg_data = state.get("report_config") or {}
+    if isinstance(cfg_data, ReportConfig):
+        cfg = cfg_data
+    else:
+        cfg = ReportConfig(
+            version=cfg_data.get("version", "v1.0"),
+            author=cfg_data.get("author", "투자팀"),
+            renderer=cfg_data.get("renderer", "playwright"),
+            out_dir=cfg_data.get("out_dir", "./output"),
+            wkhtmltopdf_path=cfg_data.get("wkhtmltopdf_path"),
+        )
     fname = f"{_safe_filename(company)}_투자메모_{cfg.version}.pdf"
     out_path = f"{cfg.out_dir.rstrip('/')}/{fname}"
     if cfg.renderer != "none":

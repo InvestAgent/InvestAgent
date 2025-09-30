@@ -571,10 +571,10 @@ def aggregate_scores(state: Dict[str, Any]) -> Dict[str, Any]:
     penalty_pct = apply_risk_penalty(state)
     adjusted = total * (1 - penalty_pct / 100.0)
 
-    if adjusted >= 70:
+    if adjusted >= 50:
         status = "pass"
         final_note = "투자 권고"
-    elif adjusted >= 60:
+    elif adjusted >= 30:
         status = "pass"
         final_note = "조건부 투자 권고"
     else:

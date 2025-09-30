@@ -19,7 +19,7 @@ class GraphState(TypedDict, total=False):
     
     # Report
     reports: List[Dict[str, Any]]
-    report_config: Any
+    report_config: Dict[str, Any]
     
     # Optional (invest.py 내부용)
     risks: List[Dict[str, Any]]
