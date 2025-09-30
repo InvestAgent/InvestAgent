@@ -91,5 +91,29 @@ def build_app():
     app = workflow.compile(checkpointer=memory)
     return app
 
+# invest_agent/workflow.py (하단에 추가)
+def export_graph_png(path: str = "invest_workflow.png"):
+    """
+    LangGraph를 Mermaid → PNG로 렌더링해서 파일로 저장.
+    """
+    g = app.get_graph()
+    # 기본값(API 렌더러)로 PNG 바이트를 받거나, 파일로 바로 저장 가능
+    g.draw_mermaid_png(output_file_path=path)
+    return path
+
+def print_graph_mermaid():
+    """
+    Mermaid 소스를 터미널에 출력.
+    이 코드를 https://mermaid.live 에 붙여 넣으면 그림이 렌더링돼.
+    """
+    g = app.get_graph()
+    print(g.draw_mermaid())
+
+
 # 바로 import해서 쓰기 편하게
 app = build_app()
+
+if __name__ == "__main__":
+    png = export_graph_png("invest_workflow.png")
+    print(f"saved: {png}")
+    print_graph_mermaid()

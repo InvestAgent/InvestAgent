@@ -1,22 +1,27 @@
 """
-보고서 생성 테스트 스크립트
-독립 실행 가능 버전
+보고서 생성 테스트 스크립트 (독립 실행 가능)
+- 새 스키마(component_scores) 및 기존 스키마(scores) 모두 테스트 가능
 """
+
 import sys
 from pathlib import Path
 
-# 프로젝트 루트를 sys.path에 추가
+# 프로젝트 루트를 sys.path에 추가 (네 디렉토리 구조에 맞게 유지)
 ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
-from nodes.report.config import ReportConfig
-from nodes.report.node import report_writer
-# from nodes.report.llm import local_llm_call  # 필요시 주석 해제
+from agents.report.config import ReportConfig
+from agents.report.node import report_writer
+# from nodes.report.llm import local_llm_call  # 필요 시 사용
 
 
-def create_test_state(decision_label: str = "invest") -> dict:
-    """테스트용 state 생성"""
-    return {
+def create_test_state(
+    use_component_scores: bool = True,
+    decision_label: str = "invest",     # 레거시 전용
+    status: str = "pass"                # 새 스키마 전용: pass/fail/hold/...
+) -> dict:
+    """테스트용 state 생성 (스키마 스위치 가능)"""
+    base_state = {
         "discovery": {
             "items": [
                 {
@@ -91,56 +96,94 @@ def create_test_state(decision_label: str = "invest") -> dict:
                 "threats": ["OpenAI 경쟁", "오픈소스 모델 발전"]
             }
         },
-        "decision": {
+    }
+
+    if use_component_scores:
+        # ── 새 스키마: component_scores / status / total_score / red_flags …
+        base_state["decision"] = {
+            "component_scores": {
+                "market": {"rationale": "TAM·CAGR 및 problem-fit", "score": 9.4},
+                "technology": {"rationale": "성능·확장성·재현 난이도", "score": 8.2},
+                "competition": {"rationale": "Moat·차별성·포지셔닝", "score": 6.0},
+                "traction": {"rationale": "ARR·파트너십", "score": 7.2},
+                "deal": {"rationale": "조건 기본값", "score": 7.5}
+            },
+            "status": status,                # "pass"|"fail"|"hold"|"invest_conditional" 등
+            "total_score": 79.0,             # 0~100
+            "investment_thesis": "크리에이터/엔터프라이즈 양쪽에서 비디오 이해/검색의 명확한 페인포인트를 해결하며, 고성능 모델과 레퍼런스가 확보되어 있음.",
+            "final_note": "GPU 비용 구조 개선 전제하에 라운드 참여 적합.",
+            "red_flags": ["GPU 인프라 비용 비중 높음", "BigTech 진입 리스크"],
+            "risks": ["데이터 편향 시 성능 저하", "규제/저작권 이슈 가능"]
+        }
+    else:
+        # ── 레거시 스키마: label / scores / total_100
+        base_state["decision"] = {
             "label": decision_label,
             "scores": {
-                "founder": 8.5, "market": 9.0, "tech": 8.0,
-                "moat": 7.0, "traction": 7.5, "terms": 8.0,
+                "founder": 8.5,
+                "market": 9.0,
+                "tech": 8.0,
+                "moat": 7.0,
+                "traction": 7.5,
+                "terms": 8.0,
                 "total_100": 79
-            }
-        },
-    }
+            },
+            # (옵션) 레거시에도 참고 값 넣어도 무해
+            "red_flags": ["GPU 인프라 비용 비중 높음", "BigTech 진입 리스크"],
+            "investment_thesis": "크리에이터/엔터프라이즈 양쪽에서 비디오 이해/검색의 명확한 페인포인트를 해결.",
+            "final_note": "원가 구조 확인 필요"
+        }
+
+    return base_state
 
 
 def main():
     print("=" * 60)
     print("투자 보고서 생성 테스트")
     print("=" * 60)
-    
+
     cfg = ReportConfig(
         version="v1.0",
         author="투자분석팀",
-        renderer="playwright",
+        renderer="playwright",   # 또는 "pdfkit" / "none"
         out_dir="./output"
     )
-    
     Path(cfg.out_dir).mkdir(parents=True, exist_ok=True)
-    
-    # 투자 추천 케이스만 테스트
-    state = create_test_state(decision_label="invest")
-    state["report_config"] = cfg
-    
-    try:
-        result = report_writer(state)
-        reports = result.get("reports", [])
-        
-        if reports:
-            rep = reports[0]
-            print(f"\n보고서 생성 성공!")
-            print(f"회사: {rep['company']}")
-            print(f"PDF: {rep['pdf']}")
-            
-            html_path = Path(cfg.out_dir) / f"{rep['company']}_preview.html"
-            with open(html_path, "w", encoding="utf-8") as f:
-                f.write(rep["html"])
-            print(f"HTML: {html_path.resolve()}")
-        else:
-            print("보고서 생성 안됨")
-            
-    except Exception as e:
-        print(f"에러: {e}")
-        import traceback
-        traceback.print_exc()
+
+    # ── [A] 새 스키마(component_scores) 케이스
+    state_new = create_test_state(
+        use_component_scores=True,
+        status="pass"            # "fail"/"hold"/"invest_conditional" 등으로도 테스트 가능
+    )
+    state_new["report_config"] = cfg
+
+    # ── [B] 레거시 스키마(scores) 케이스 (원하면 주석 해제하여 비교 테스트)
+    state_legacy = create_test_state(
+        use_component_scores=False,
+        decision_label="invest"
+    )
+    state_legacy["report_config"] = cfg
+
+    for tag, st in [("NEW(component_scores)", state_new), ("LEGACY(scores)", state_legacy)]:
+        print(f"\n--- 생성 시나리오: {tag} ---")
+        try:
+            result = report_writer(st)
+            reports = result.get("reports", [])
+            if reports:
+                rep = reports[-1]
+                print(f"보고서 생성 성공!")
+                print(f"회사: {rep['company']}")
+                print(f"PDF:  {rep['pdf']}")
+                html_path = Path(cfg.out_dir) / f"{rep['company']}_{tag.replace('/', '_')}_preview.html"
+                with open(html_path, "w", encoding="utf-8") as f:
+                    f.write(rep["html"])
+                print(f"HTML: {html_path.resolve()}")
+            else:
+                print("보고서 생성 안됨")
+        except Exception as e:
+            print(f"에러: {e}")
+            import traceback
+            traceback.print_exc()
 
 
 if __name__ == "__main__":
