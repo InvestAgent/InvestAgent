@@ -3,7 +3,7 @@ from types import SimpleNamespace
 
 class ReportConfig(SimpleNamespace):
     version: str = "v1.0"
-    author: str = "팀 알파"
+    author: str = "SKALA 4반 3조"
     renderer: str = "none"
     out_dir: str = "./outputs"
 
