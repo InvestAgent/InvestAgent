@@ -1,14 +1,13 @@
 # 🚀 AI Startup Investment Evaluation Agent
 
-**시장·기술·경쟁 데이터를 실시간 수집·검증하고 SWOT·KPI 기반으로 투자 시나리오를 자동 생성·판단하는 실증 중심 스타트업 투자 평가 에이전트**
+> **시장·기술·경쟁 데이터를 실시간 수집·검증하고, SWOT·KPI 기반 분석으로 투자 시나리오를 자동 생성·판단하는 실증 중심 스타트업 평가 에이전트**
 
 ---
 
 ## 📌 Overview
-
-* **Objective**: AI 스타트업의 기술력, 시장성, 리스크를 종합 분석하여 투자 적합성을 자동 평가
-* **Method**: LLM 기반 Agentic RAG 파이프라인
-* **Tools**: LangGraph · LangChain · Python
+- **Objective:** AI 스타트업의 기술력, 시장성, 리스크를 종합 분석하여 투자 적합성을 자동 평가  
+- **Method:** LLM 기반 Agentic RAG 파이프라인  
+- **Tools:** LangGraph · LangChain · Python
 
 ---
 
