@@ -232,6 +232,6 @@ def market_eval(state: GraphState) -> GraphState:
         }
     
     return {
-        **state,
+        # **state,
         "market_eval": market_data
     }
