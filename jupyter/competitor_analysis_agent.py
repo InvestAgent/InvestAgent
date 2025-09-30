@@ -245,7 +245,7 @@ def search_competitors_hybrid(state: CompetitorAgentState) -> CompetitorAgentSta
     
     try:
         vectorstore = FAISS.load_local(
-            "competitor_vectordb",
+            "./faiss_index", # 👈 경로 수정
             embeddings,
             allow_dangerous_deserialization=True
         )
