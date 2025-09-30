@@ -14,3 +14,5 @@ if __name__ == "__main__":
     }
     out = app.invoke(init_state)
     print("생성된 보고서:", out.get("reports", []))
+
+# python -m invest_agent.run_smoke

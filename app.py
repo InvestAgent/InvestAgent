@@ -23,3 +23,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# python app.py --query "한국 생성형 AI 스타트업 알려줘!"
