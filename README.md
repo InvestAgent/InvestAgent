@@ -144,6 +144,15 @@ Final Score = Σ(영역 점수 × 가중치) – Risk Penalty
 
 ---
 
+---
+
+<details>
+  <summary><h3>🚀 보고서 예시 </h3></summary>
+
+![에이전트 아키텍처](images/보고서예시.png)
+</details>
+
+
 ## 👥 Contributors
 
 | 스타트업 탐색 에이전트                                                                                                             | 시장성 평가 에이전트                                                                                                             | 기술 요약 에이전트                                                                                                                 | 보고서 생성 에이전트                                                                                                            | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
