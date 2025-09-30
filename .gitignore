@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Python
 __pycache__/
 *.py[cod]
@@ -82,3 +83,6 @@ desktop.ini
 # Playwright (브라우저 바이너리)
 .playwright/
 playwright-report/
+=======
+.env
+>>>>>>> 50d0871 (invest agent)
