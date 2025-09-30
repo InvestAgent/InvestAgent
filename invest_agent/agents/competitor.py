@@ -1,4 +1,4 @@
-# nodes/agnet/competitor.py
+# /agnet/competitor.py
 from typing import Dict, Any
 import json
 from datetime import datetime
@@ -9,7 +9,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 
-from ..states import GraphState
+from invest_agent.states import GraphState
 
 
 def extract_json_from_llm_response(text: str) -> dict:
