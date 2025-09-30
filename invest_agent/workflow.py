@@ -20,7 +20,10 @@ def invest_or_hold(state: GraphState):
     if idx >= len(companies):
         return "done"
     label = state.get("decision", {}).get("label", "hold")
-    if label == "recommend":
+    if label not in ["invest", "recommend", "invest_conditional"]:
+        return {"reports": state.get("reports", [])}
+
+    if label in ("recommend", "invest_conditional"):
         return "invest"
     elif label == "reject":
         return "reject_next"

@@ -311,7 +311,7 @@ def report_writer(state: Dict[str, Any]) -> Dict[str, Any]:
             version=cfg_data.get("version", "v1.0"),
             author=cfg_data.get("author", "투자팀"),
             renderer=cfg_data.get("renderer", "playwright"),
-            out_dir=cfg_data.get("out_dir", "./output"),
+            out_dir=cfg_data.get("out_dir", "./outputs"),
             wkhtmltopdf_path=cfg_data.get("wkhtmltopdf_path"),
         )
     fname = f"{_safe_filename(company)}_투자메모_{cfg.version}.pdf"
