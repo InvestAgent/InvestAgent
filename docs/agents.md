@@ -47,7 +47,7 @@
   * :european_castle: 진입장벽 (Moat)
 * VC 관점의 SWOT 분석 생성
 
-* #### 🔄 동작 흐름 (6단계)
+* 🔄 동작 흐름 (6단계)
 1. **[입력] Tech Agent + Market Agent 결과**  
    ↓  
 2. **initialize_state** – 입력 데이터 파싱 및 State 초기화  
@@ -62,7 +62,7 @@
    ↓  
 7. **finalize_output** – JSON 형태 최종 결과 출력  
 
-#### 🔍 경쟁사 발굴 전략 (Hybrid + RAG)
+* 🔍 경쟁사 발굴 전략 (Hybrid + RAG)
 - **Vector DB (FAISS)**  
   - HuggingFace BGE-base-en-v1.5 임베딩 기반  
   - 사전 구축된 스타트업 DB에서 유사 기업 2곳 검색  
@@ -73,15 +73,15 @@
   - OpenAI, Google, Meta, Microsoft, Adobe, Amazon, Anthropic, Stability AI  
   - GPT-4o-mini reasoning 기반 2곳 선정  
 
-#### 📝 SWOT 분석 생성 원칙
+* 📝 SWOT 분석 생성 원칙
 - **투자 판단 중심** (VC 의사결정 활용 목적)  
 - **정량적 근거 필수** (추상적 표현 금지, 수치 기반)  
 - **각 항목 5~7개 작성**  
 
-**Strengths (강점)** – 경쟁사 대비 우월한 점, 정량 근거 포함  
-**Weaknesses (약점)** – 구조적 리스크, 개선 어려움  
-**Opportunities (기회)** – 시장 성장, 틈새 기회, 파트너십 가능성  
-**Threats (위협)** – 대기업 진입, 규제, 기술 commoditization 리스크  
+- **Strengths (강점)** – 경쟁사 대비 우월한 점, 정량 근거 포함  
+- **Weaknesses (약점)** – 구조적 리스크, 개선 어려움  
+- **Opportunities (기회)** – 시장 성장, 틈새 기회, 파트너십 가능성  
+- **Threats (위협)** – 대기업 진입, 규제, 기술 commoditization 리스크  
 ---
 ## :rocket: Startup Investment Decision Engine
 정량 지표는 계산, 정성 평가는 LLM 해석으로 처리하여 스타트업 투자 판단을 자동화하는 엔진입니다.
