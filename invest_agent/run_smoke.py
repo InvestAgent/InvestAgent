@@ -12,7 +12,10 @@ if __name__ == "__main__":
         "query": "한국 생성형 AI 스타트업 알려줘!",
         "report_config": ReportConfig(),
     }
-    out = app.invoke(init_state)
+    out = app.invoke(
+        init_state,
+        config={"configurable": {"thread_id": "test-thread-1"}}
+    )
     print("생성된 보고서:", out.get("reports", []))
 
 # python -m invest_agent.run_smoke

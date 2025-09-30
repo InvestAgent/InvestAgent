@@ -35,7 +35,7 @@ def tech_summary(state: GraphState) -> GraphState:
     if not startup_data:
         print(f"[기술 요약] 경고: {current_company} 데이터 없음")
         return {
-            **state,
+            # **state,
             "tech": {
                 "technology": {"technology_summary": "데이터 없음"},
                 "meta": {"startup_name": current_company}
@@ -192,6 +192,6 @@ JSON 스키마:
         }
     
     return {
-        **state,
+        # **state,
         "tech": tech_data
     }

@@ -586,6 +586,6 @@ def pick_company(state: GraphState) -> GraphState:
     print(f"[회사 선택] {idx + 1}/{len(companies)}: {current_company}")
     
     return {
-        **state,
+        # **state,
         "current_company": current_company
     }

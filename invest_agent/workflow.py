@@ -5,13 +5,13 @@ from langgraph.checkpoint.memory import MemorySaver
 from .states import GraphState
 
 # ── Nodes
-from agents.discovery import startup_discovery, pick_company
-from agents.tech import tech_summary
-from agents.market import market_eval
-from agents.competitor import competitor_analysis
-from agents.invest import investment_decision
-from agents.report.node import report_writer       
-from agents.common import advance_or_finish
+from .agents.discovery import startup_discovery, pick_company
+from .agents.tech import tech_summary
+from .agents.market import market_eval
+from .agents.competitor import competitor_analysis
+from .agents.invest import investment_decision
+from .agents.report.node import report_writer       
+from .agents.common import advance_or_finish
 
 # ── Routers
 def invest_or_hold(state: GraphState):
