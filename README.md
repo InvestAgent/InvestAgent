@@ -26,7 +26,7 @@
 | --------- | ---------------------------- |
 | Framework | LangGraph, LangChain, Python |
 | LLM       | GPT-4o-mini (OpenAI API)     |
-| Retrieval | FAISS, Chroma                |
+| Retrieval | FAISS            |
 | Embedding | BAAI/bge-base-en-v1.5               |
 
 ---
