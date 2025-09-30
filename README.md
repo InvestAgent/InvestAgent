@@ -30,6 +30,9 @@
 | Embedding | BAAI/bge-base-en-v1.5               |
 
 ---
+## 🏗️ Architecture
+
+![에이전트 아키텍처](images/image.png)
 
 ## 🤖 Agents
 
@@ -126,9 +129,7 @@ Final Score = Σ(영역 점수 × 가중치) – Risk Penalty
 
 ---
 
-## 🏗️ Architecture
 
-![에이전트 아키텍처](images/image.png)
 
 ---
 
