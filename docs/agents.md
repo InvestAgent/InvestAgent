@@ -35,7 +35,7 @@
 **목적:** 시장 규모·성장성·수요를 정량·정성적으로 평가
 * FAISS + BGE 임베딩 기반 사내 리서치 문서 활용
 * EnsembleRetriever로 핵심 인사이트 추출
-* Tavily 검색 자동 보강 → TAM, CAGR, 수요 요인 채움
+* Tavily, GOOGLE_CES를 통해 검색 자동 보강 → TAM, CAGR, 수요 요인 채움
 * 컨텍스트 부족 시 합리적 추정치 명시
 ---
 ### :boxing_glove: 경쟁사 비교 에이전트
