@@ -142,12 +142,21 @@ Final Score = Σ(영역 점수 × 가중치) – Risk Penalty
 └── README.md
 ```
 
+
 ---
+
+<details>
+  <summary><h3>🚀 보고서 예시 </h3></summary>
+
+![에이전트 아키텍처](images/보고서예시.png)
+</details>
+
 
 ## 👥 Contributors
 
 | 스타트업 탐색 에이전트                                                                                                             | 시장성 평가 에이전트                                                                                                             | 기술 요약 에이전트                                                                                                                 | 보고서 생성 에이전트                                                                                                            | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/yeseul106) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
+| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/yeseul106) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
+ |
 
 ---
