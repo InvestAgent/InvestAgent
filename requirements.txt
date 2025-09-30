@@ -1,0 +1,31 @@
+# Core LangChain packages
+langchain==0.3.7
+langchain-core==0.3.15
+langchain-community==0.3.5
+langchain-openai==0.2.5
+
+# Embeddings
+langchain-huggingface==0.1.2
+sentence-transformers==3.3.1
+transformers==4.46.3
+
+# Vector Database
+faiss-cpu==1.9.0
+# GPU 버전이 필요한 경우 faiss-cpu 대신 아래 주석 해제
+# faiss-gpu==1.7.2
+
+# Web Search
+tavily-python==0.5.0
+
+# Pydantic for data validation
+pydantic==2.9.2
+
+# Environment variables
+python-dotenv==1.0.1
+
+# OpenAI
+openai==1.54.4
+
+# Additional dependencies
+numpy==1.26.4
+typing-extensions==4.12.2
