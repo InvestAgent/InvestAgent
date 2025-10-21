@@ -46,6 +46,17 @@
 
 ➡️ [에이전트 상세 설명 보기](./docs/agents.md)
 
+
+
+#### [참고] RAG 사용 위치
+
+| 에이전트 | Retrieval | Vector DB | 
+|---------|-----------|-----------|
+| **Market** | Tavily + FAISS | `faiss_market_index` | 
+| **Competitor** | FAISS + Tavily | `faiss_startup_index` | 
+
+
+
 ---
 
 ## 📊 투자 평가 개요
@@ -74,12 +85,31 @@
 ## 📂 Directory Structure
 
 ```
-├── data/                  # 스타트업 PDF 문서
-├── agents/                # 평가 기준별 Agent 모듈
-├── prompts/              # 프롬프트 템플릿
-├── outputs/              # 평가 결과 저장
-├── app.py                # 실행 스크립트
-└── README.md
+📂 investAgent/
+├── invest_agent/                 # 메인 패키지
+│   ├── agents/                   # 에이전트 모듈
+│   │   ├── report/               # 보고서 생성 서브모듈
+│   │   ├── competitor.py         # 경쟁사 분석 에이전트
+│   │   ├── discovery.py          # 기업 탐색 에이전트
+│   │   ├── invest.py             # 투자 판단 에이전트
+│   │   ├── market.py             # 시장 분석 에이전트
+│   │   └── tech.py               # 기술 분석 에이전트
+│   ├── __init__.py
+│   ├── run_smoke.py              # 실행 스크립트
+│   ├── states.py                 # LangGraph State 정의
+│   └── workflow.py               # LangGraph Workflow 정의
+│
+├── data/                         # 데이터 파일
+├── docs/                         # 문서
+├── draft/                        # 작업 초안
+├── images/                       # 이미지 파일
+├── scripts/                      # 유틸리티 스크립트
+│   └── build_market_vectordb.py  # 시장 DB 생성 스크립트
+│
+├── .gitignore
+├── app.py                        # 메인 애플리케이션
+├── README.md
+└── requirements.txt              # 의존성 패키
 ```
 
 
@@ -94,9 +124,9 @@
 
 ## 👥 Contributors
 
-| 스타트업 탐색 에이전트                                                                                                             | 시장성 평가 에이전트                                                                                                             | 기술 요약 에이전트                                                                                                                 | 보고서 생성 에이전트                                                                                                            | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
-| ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/yeseul106) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
+| 스타트업 탐색 에이전트 | 시장성 평가 에이전트 | 기술 요약 에이전트 | 보고서 생성 에이전트 | 경쟁사 비교 에이전트 | 투자 판단 에이전트 |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/gyeongsu01) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
  
 
 ---
