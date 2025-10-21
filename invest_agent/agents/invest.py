@@ -626,10 +626,34 @@ def investment_decision(state: GraphState) -> GraphState:
     투자 판단 노드 (Workflow용 래퍼)
     
     입력:
-        - discovery, tech, market_eval, competitor
+        - discovery: 기업 탐색 결과 (메타 정보)
+        - tech: 기술 분석 결과
+        - market_eval: 시장 분석 결과
+        - competitor: 경쟁사 분석 결과
+    
+    처리:
+        1. 각 영역별 점수 계산
+           - 시장: 35% (TAM, CAGR, Problem-Fit)
+           - 기술: 25% (SOTA, IP, 확장성)
+           - 경쟁: 20% (Moat, 차별성, 포지셔닝)
+           - 실적: 10% (ARR, 파트너십)
+           - 딜: 10% (투자 조건)
+        2. 리스크 페널티 적용 (최대 15%)
+        3. LLM 기반 투자 의견서 생성
     
     출력:
-        - decision: {...}
+        - decision: {
+            label: "recommend" | "invest_conditional" | "reject",
+            total_100: 종합 점수 (0-100),
+            component_scores: 영역별 점수 및 근거,
+            risks: 주요 리스크 목록,
+            investment_thesis: 투자 의견서,
+            final_note: 최종 권고사항
+          }
+    
+    참고: 
+    - 이 노드는 새로운 데이터를 수집하지 않고 기존 분석 결과만 종합
+    - 출처는 각 분석 에이전트(Tech, Market, Competitor)가 수집한 것을 참조
     """
     current_company = state.get("current_company", "")
     print(f"[투자 판단] 시작: {current_company}")

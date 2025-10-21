@@ -1,6 +1,5 @@
-HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
 
-<!doctype html>
+HTML_TMPL = r"""<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -24,7 +23,7 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
   .decision-details { display: flex; gap: 32px; font-size: 15px; opacity: 0.95; }
   .key-points { background: #f8f9fa; border-left: 4px solid #0066cc; padding: 20px 24px; margin: 24px 0; border-radius: 0 8px 8px 0; }
   .key-points ul { margin: 0; padding-left: 20px; }
-  .section { margin-top: 48px; }
+  .section { margin-top: 48px; page-break-inside: avoid; }
   h2 { font-size: 24px; font-weight: 700; margin: 0 0 20px 0; color: #000; border-bottom: 2px solid #e5e7eb; padding-bottom: 12px; }
   h3 { font-size: 18px; font-weight: 600; margin: 16px 0 12px 0; color: #333; }
   .info-card { background: #f8f9fa; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
@@ -45,7 +44,7 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
   .score-item { text-align: center; padding: 12px; background: #fff; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
   .score-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
   .score-value { font-size: 20px; font-weight: 700; color: #0066cc; margin-top: 4px; }
-  .score-rationale { font-size: 12px; color: #444; margin-top: 6px; }
+  .score-rationale { font-size: 12px; color: #444; margin-top: 6px; line-height: 1.4; }
   .total-score { text-align: center; padding: 20px; background: #fff; border-radius: 8px; margin-top: 16px; }
   .total-score .value { font-size: 40px; font-weight: 700; color: #0066cc; }
   .total-score .label { font-size: 14px; color: #666; margin-top: 8px; }
@@ -55,10 +54,15 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
   .tag.success { background: #e8f5e9; color: #388e3c; }
   .tag.warning { background: #fff3e0; color: #f57c00; }
   .tag.danger { background: #ffebee; color: #d32f2f; }
-  .sources-list { font-size: 13px; }
+  .sources-list { font-size: 13px; line-height: 1.8; }
   .sources-list li { margin: 8px 0; word-break: break-all; }
-  .source-type { display: inline-block; padding: 2px 8px; background: #0066cc; color: #fff; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px; }
-  @media print { body { background: #fff; padding: 0; } .container { box-shadow: none; } }
+  .source-type { display: inline-block; padding: 2px 8px; background: #0066cc; color: #fff; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px; text-transform: uppercase; }
+  .source-stage { color: #666; font-size: 12px; margin-left: 8px; }
+  @media print { 
+    body { background: #fff; padding: 0; } 
+    .container { box-shadow: none; page-break-inside: avoid; }
+    .section { page-break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -85,7 +89,7 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
 
   {% if key_points %}
   <div class="key-points">
-    <h3 style="margin-top:0;">핵심 요약</h3>
+    <h3 style="margin-top:0;">핵심 요약 (Executive Summary)</h3>
     <ul>
       {% for p in key_points if p %}<li>{{ p }}</li>{% endfor %}
     </ul>
@@ -99,7 +103,7 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
         <div>
           <p><strong>설립:</strong> {{ overview.founded or '-' }}</p>
           <p><strong>지역:</strong> {{ overview.region or '-' }}</p>
-          <p><strong>창업자:</strong> {{ overview.founder or '-' }}</p>
+          <p><strong>창업자/CEO:</strong> {{ overview.founder or '-' }}</p>
         </div>
         <div>
           <p><strong>산업:</strong> {{ overview.segment or '-' }}</p>
@@ -195,13 +199,30 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
       <div>
         <div class="info-card">
           <h3>주요 지표 (KPIs)</h3>
+          {% if kpi_table_img %}
           <img src="data:image/png;base64,{{ kpi_table_img }}" alt="KPI Table">
+          {% else %}
+          <table>
+            <tr><th>지표</th><th>값</th></tr>
+            <tr><td>ARR</td><td>{{ kpis.arr }}</td></tr>
+            <tr><td>QoQ 성장률</td><td>{{ kpis.qoq }}</td></tr>
+            <tr><td>NDR</td><td>{{ kpis.ndr }}</td></tr>
+            <tr><td>Gross Margin</td><td>{{ kpis.gross_margin }}</td></tr>
+            <tr><td>Burn Rate</td><td>{{ kpis.burn }}</td></tr>
+            <tr><td>Runway</td><td>{{ kpis.runway_months }}</td></tr>
+          </table>
+          {% endif %}
+        </div>
+        <div class="info-card" style="margin-top:16px;">
+          <h3>트랙션</h3>
+          <p><strong>펀딩:</strong> {{ traction.funding if traction else '-' }}</p>
+          <p><strong>투자자:</strong> {{ ', '.join(traction.investors) if traction.investors and traction.investors[0] != 'unknown' else '-' }}</p>
+          <p><strong>파트너십:</strong> {{ ', '.join(traction.partnerships[:3]) if traction.partnerships and traction.partnerships[0] != 'unknown' else '-' }}</p>
         </div>
       </div>
       <div>
         <div class="info-card">
-          <h3>평가 점수(컴포넌트)</h3>
-          <!-- 동적 점수 카드 -->
+          <h3>평가 점수</h3>
           <div class="score-card">
             <div class="score-items">
               {% for it in score_items %}
@@ -217,31 +238,29 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
               <div class="label">총점 (100점 만점)</div>
             </div>
           </div>
-          <!-- 바차트 (선택) -->
           {% if scores_img %}
-          <img src="data:image/png;base64,{{ scores_img }}" alt="Scores Bar">
+          <img src="data:image/png;base64,{{ scores_img }}" alt="Scores Bar" style="margin-top:16px;">
           {% endif %}
         </div>
       </div>
     </div>
   </div>
 
-  <!-- NEW: 투자 논리 & 레드 플래그 -->
   {% if investment_thesis or red_flags or final_note %}
   <div class="section">
     <h2>6. 투자 논리 & 레드 플래그</h2>
     <div class="row">
       <div class="info-card">
         <h3>Investment Thesis</h3>
-        <p>{{ investment_thesis or '작성 없음' }}</p>
+        <p style="line-height:1.8;">{{ investment_thesis or '작성 없음' }}</p>
         {% if final_note %}
-        <p style="margin-top:10px;"><strong>메모:</strong> {{ final_note }}</p>
+        <p style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e7eb;"><strong>최종 의견:</strong> {{ final_note }}</p>
         {% endif %}
       </div>
       <div class="info-card">
         <h3>Red Flags</h3>
         {% if red_flags %}
-        <ul>{% for rf in red_flags %}<li class="tag danger">{{ rf }}</li>{% endfor %}</ul>
+        <ul>{% for rf in red_flags %}<li><span class="tag danger">{{ rf }}</span></li>{% endfor %}</ul>
         {% else %}
         <p>특이사항 없음</p>
         {% endif %}
@@ -295,17 +314,78 @@ HTML_TMPL = r"""<!-- templates/template.py 내부 HTML_TMPL 교체 -->
   <div class="section">
     <h2>10. 참고 자료 및 출처</h2>
     {% if sources %}
-    <ul class="sources-list">
-      {% for s in sources %}
-      <li><span class="source-type">{{ (s.type or 'WEB') | upper }}</span>
-        <a href="{{ s.url or '#' }}" target="_blank">{{ s.url or '' }}</a>
-      </li>
-      {% endfor %}
-    </ul>
+    <div class="info-card">
+      <p><strong>총 {{ sources|length }}개 출처</strong></p>
+      <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;">
+        <span class="tag primary">Discovery: {{ sources|selectattr('type', 'equalto', 'discovery')|list|length }}개</span>
+        <span class="tag success">Tech: {{ sources|selectattr('type', 'equalto', 'tech')|list|length }}개</span>
+        <span class="tag warning">Market: {{ (sources|selectattr('type', 'equalto', 'market')|list|length) + (sources|selectattr('type', 'equalto', 'report')|list|length) }}개</span>
+        <span class="tag danger">Competitor: {{ sources|selectattr('type', 'equalto', 'competitor')|list|length }}개</span>
+      </div>
+    </div>
+    
+    <!-- 단계별 출처 구분 -->
+    {% for stage_name in ['기업 탐색', '기술 분석', '시장 분석', '시장 분석 (리서치 보고서)', '경쟁사 분석'] %}
+      {% set stage_sources = sources|selectattr('stage', 'equalto', stage_name)|list %}
+      {% if stage_sources %}
+      <div class="info-card" style="margin-top:16px;">
+        <h3>{{ stage_name }}</h3>
+        <ul class="sources-list">
+          {% for s in stage_sources %}
+          <li>
+            <span class="source-type">{{ s.type }}</span>
+            {% if s.url.startswith('http') %}
+            <a href="{{ s.url }}" target="_blank" style="color:#0066cc;">{{ s.url|truncate(100) }}</a>
+            {% else %}
+            <span>{{ s.url }}</span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    {% endfor %}
+    
     {% else %}
     <div class="info-card"><p>출처 정보 준비 중</p></div>
     {% endif %}
   </div>
+
+  <!-- Appendix: 평가 방법론 -->
+  {% if appendix %}
+  <div class="section">
+    <h2>Appendix: 평가 방법론</h2>
+    <div class="info-card">
+      <h3>점수 산출 방식</h3>
+      <p>{{ appendix.scoring_methodology.description }}</p>
+      <table style="margin-top:12px;">
+        <thead>
+          <tr><th>영역</th><th>가중치</th><th>평가 기준</th></tr>
+        </thead>
+        <tbody>
+          {% for comp in appendix.scoring_methodology.components %}
+          <tr>
+            <td><strong>{{ comp.name }}</strong></td>
+            <td><strong>{{ comp.weight }}</strong></td>
+            <td>{{ comp.criteria }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p style="margin-top:16px;"><strong>리스크 페널티:</strong> {{ appendix.scoring_methodology.risk_penalty }}</p>
+    </div>
+    
+    <div class="info-card" style="margin-top:16px;">
+      <h3>투자 판단 기준</h3>
+      <ul>
+        <li><strong>투자 권고 (Recommend):</strong> {{ appendix.decision_threshold.recommend }}</li>
+        <li><strong>조건부 검토 (Conditional):</strong> {{ appendix.decision_threshold.conditional }}</li>
+        <li><strong>보류/거절 (Reject):</strong> {{ appendix.decision_threshold.reject }}</li>
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 
 </body>

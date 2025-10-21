@@ -19,7 +19,18 @@ from langchain_community.vectorstores.utils import filter_complex_metadata
 from langchain_community.retrievers import TavilySearchAPIRetriever
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.documents import Document
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_huggingface import HuggingFaceEmbeddings
+
+try:
+    # LangChain >= 1.0 (분리 패키지)
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+except ImportError:
+    try:
+        # LangChain 0.1.x
+        from langchain.text_splitters import RecursiveCharacterTextSplitter
+    except ImportError:
+        # LangChain 0.0.x
+        from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 load_dotenv()
@@ -113,11 +124,11 @@ class GenerativeAIStartupRAG:
         web_search_tool = {"type": "web_search_preview"}
         self.web_search_llm_with_tools = self.web_search_llm.bind_tools([web_search_tool])
 
-        self.embeddings = HuggingFaceBgeEmbeddings(
+        self.embeddings = HuggingFaceEmbeddings(
             model_name="BAAI/bge-base-en-v1.5",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": True},
-            query_instruction="Represent this sentence for searching relevant passages: "
+            # query_instruction="Represent this sentence for searching relevant passages: "
         )
 
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -308,7 +319,7 @@ CEO: {startup.ceo}
         except Exception as e:
             print(f"❌ 벡터 DB 추가 중 오류: {e}")
 
-    def save_vector_store(self, save_path: str = "./faiss_enriched_index") -> None:
+    def save_vector_store(self, save_path: str = "./faiss_startup_index") -> None:
         if not self.vector_store:
             print("⚠️ 저장할 벡터 스토어가 없습니다.")
             return
@@ -319,7 +330,7 @@ CEO: {startup.ceo}
         except Exception as e:
             print(f"❌ 벡터 스토어 저장 중 오류: {e}")
 
-    def load_vector_store(self, load_path: str = "./faiss_enriched_index") -> None:
+    def load_vector_store(self, load_path: str = "./faiss_startup_index") -> None:
         try:
             self.vector_store = FAISS.load_local(
                 load_path, 
@@ -515,7 +526,7 @@ def main():
         if isinstance(result, GenerativeAIStartupList):
             print(json.dumps(result.model_dump(exclude_none=True), ensure_ascii=False, indent=2))
             save_result_to_json(result)
-            rag_system.save_vector_store("./faiss_enriched_index")
+            rag_system.save_vector_store("./faiss_startup_index")
         else:
             print("예상하지 못한 결과:", result)
 
@@ -547,8 +558,15 @@ def startup_discovery(state: GraphState) -> GraphState:
     rag_system = GenerativeAIStartupRAG()
     
     try:
+        # ===== 기존 FAISS 로드 시도 (누적 저장) =====
+        try:
+            rag_system.load_vector_store("./faiss_startup_index")
+            print(f"  ✓ 기존 FAISS DB 로드 완료")
+        except Exception as e:
+            print(f"  ℹ️ 기존 FAISS DB 없음, 새로 생성 예정")
+
         # 네 원본 메서드 호출
-        result = rag_system.search_startup(query, save_enriched_to_db=False)
+        result = rag_system.search_startup(query, save_enriched_to_db=True)
         
         # Pydantic → dict 변환
         discovery_dict = result.model_dump(exclude_none=True)
@@ -556,13 +574,30 @@ def startup_discovery(state: GraphState) -> GraphState:
         # 회사명 리스트 추출
         companies = [item["startup_name"] for item in discovery_dict["items"]]
         
+        # 출처 수집
+        discovery_sources = []
+        for item in discovery_dict["items"]:
+            # 각 스타트업의 source_urls 수집
+            if item.get("source_urls"):
+                discovery_sources.extend(item["source_urls"])
+
+        # 중복 제거
+        discovery_sources = list(set(discovery_sources))
+
+        # faiss 저장 
+        rag_system.save_vector_store("./faiss_startup_index") 
+
+        state_sources = state.get("sources", {})
+        state_sources["discovery"] = discovery_sources
+        
         print(f"  ✓ 발견: {len(companies)}개 스타트업")
         
         return {
             **state,
             "discovery": discovery_dict,
             "companies": companies,
-            "idx": 0
+            "idx": 0,
+            "sources": state_sources
         }
         
     finally:

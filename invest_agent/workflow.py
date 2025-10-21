@@ -2,7 +2,7 @@
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 
-from .states import GraphState
+from .states import GraphState, InvestmentLabel
 
 # ── Nodes
 from .agents.discovery import startup_discovery, pick_company
@@ -15,22 +15,48 @@ from .agents.common import advance_or_finish
 
 # ── Routers
 def invest_or_hold(state: GraphState):
+    """
+    투자 결정 후 라우팅
+    
+    - invest/recommend/invest_conditional → 보고서 작성
+    - reject → 다음 회사로
+    - hold → 다음 회사로
+    - 회사 목록 끝 → 종료
+    """
     companies = state.get("companies", [])
     idx = state.get("idx", 0)
+    
+    # 모든 회사 분석 완료
     if idx >= len(companies):
         return "done"
-    label = state.get("decision", {}).get("label", "hold")
-    if label not in ["invest", "recommend", "invest_conditional"]:
-        return {"reports": state.get("reports", [])}
-
-    if label in ("recommend", "invest_conditional"):
+    
+    # 투자 레이블 확인
+    decision = state.get("decision", {})
+    label = decision.get("label", InvestmentLabel.HOLD)
+    
+    # 투자 추천 케이스 → 보고서 작성
+    if label in {
+        InvestmentLabel.INVEST,
+        InvestmentLabel.RECOMMEND,
+        InvestmentLabel.INVEST_CONDITIONAL
+    }:
         return "invest"
-    elif label == "reject":
+    
+    # 거절 케이스 → 다음 회사
+    if label == InvestmentLabel.REJECT:
         return "reject_next"
-    else:
-        return "hold_or_next"
+    
+    # 보류 케이스 → 다음 회사
+    return "hold_or_next"
+
 
 def has_more_companies(state: GraphState):
+    """
+    보고서 작성 후 라우팅
+    
+    - 다음 회사 있음 → next
+    - 마지막 회사 → done
+    """
     companies = state.get("companies", [])
     idx = state.get("idx", 0)
     return "next" if idx + 1 < len(companies) else "done"
@@ -94,7 +120,10 @@ def build_app():
     app = workflow.compile(checkpointer=memory)
     return app
 
-# invest_agent/workflow.py (하단에 추가)
+
+
+# ===== 시각화 유틸리티 =====
+
 def export_graph_png(path: str = "invest_workflow.png"):
     """
     LangGraph를 Mermaid → PNG로 렌더링해서 파일로 저장.

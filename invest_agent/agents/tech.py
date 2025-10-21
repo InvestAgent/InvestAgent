@@ -1,5 +1,5 @@
 # agents/tech.py
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 import json
 
 from langchain_openai import ChatOpenAI
@@ -17,10 +17,8 @@ def tech_summary(state: GraphState) -> GraphState:
         - discovery: 기업 탐색 결과 (items 리스트)
     
     출력:
-        - tech: {
-            technology: {...},
-            meta: {...}
-          }
+        - tech: {technology: {...}, meta: {...}}
+        - sources["tech"]: 참고한 출처 URL 리스트
     """
     current_company = state.get("current_company", "")
     discovery_items = state.get("discovery", {}).get("items", [])
@@ -35,7 +33,6 @@ def tech_summary(state: GraphState) -> GraphState:
     if not startup_data:
         print(f"[기술 요약] 경고: {current_company} 데이터 없음")
         return {
-            # **state,
             "tech": {
                 "technology": {"technology_summary": "데이터 없음"},
                 "meta": {"startup_name": current_company}
@@ -43,6 +40,9 @@ def tech_summary(state: GraphState) -> GraphState:
         }
     
     print(f"[기술 요약] 시작: {current_company}")
+    
+    # ===== 출처 수집 시작 =====
+    tech_sources = []
     
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.3)
     
@@ -64,12 +64,23 @@ def tech_summary(state: GraphState) -> GraphState:
     keywords = response.content.strip()
     print(f"  ✓ 키워드: {keywords}")
     
-    # 2. 웹 검색
+    # 2. 웹 검색 (URL 수집 포함)
+    web_content = ""
     try:
         search = TavilySearchResults(max_results=3)
         search_results = search.invoke(keywords)
-        web_content = "\n".join([result["content"] for result in search_results])
+        
+        # 콘텐츠 수집
+        web_content = "\n".join([result.get("content", "") for result in search_results])
+        
+        # URL 수집
+        for result in search_results:
+            if result.get("url"):
+                tech_sources.append(result["url"])
+        
         print(f"  ✓ 웹 검색: {len(search_results)}개 결과")
+        print(f"  ✓ 수집된 URL: {len(tech_sources)}개")
+        
     except Exception as e:
         print(f"  ⚠ 웹 검색 실패, fallback 사용: {e}")
         web_content = f"""
@@ -191,7 +202,11 @@ JSON 스키마:
             }
         }
     
+    # ===== State 업데이트 (출처 포함) =====
+    state_sources = state.get("sources", {})
+    state_sources["tech"] = list(set(tech_sources))  # 중복 제거
+    
     return {
-        # **state,
-        "tech": tech_data
+        "tech": tech_data,
+        "sources": state_sources
     }

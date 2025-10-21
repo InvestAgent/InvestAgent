@@ -49,6 +49,8 @@ def render_html(final_json: Dict[str, Any], meta: Dict[str, Any]) -> str:
         swot=meta.get("swot", {}),
         kpis=final_json.get("kpis", {}),
         scores=final_json.get("scores", {}),
+        score_items=final_json.get("score_items", []),  # ✅ 추가
+        total_100=final_json.get("total_100", 0),  # ✅ 추가
         risks=final_json.get("risks", []),
         mitigations=final_json.get("mitigations", []),
         required_data=final_json.get("recommendations", {}).get("required_data", []),
@@ -56,12 +58,18 @@ def render_html(final_json: Dict[str, Any], meta: Dict[str, Any]) -> str:
         scores_img=scores_img,
         kpi_table_img=kpi_table_img,
         sources=final_json.get("sources", []),
+        # ✅ 추가: 누락된 변수들
+        traction=final_json.get("traction", {}),
+        business=final_json.get("business", {}),
+        investment_thesis=final_json.get("investment_thesis", ""),
+        final_note=final_json.get("final_note", ""),
+        red_flags=final_json.get("red_flags", []),
+        appendix=final_json.get("appendix", {}),
     )
     logger.info(f"HTML 렌더링 완료: {final_json.get('company', 'Unknown')}")
     return html
 
 
-# 🚀 여기 추가
 def html_to_pdf(
     html: str,
     out_path: str,

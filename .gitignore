@@ -35,7 +35,7 @@ ENV/
 .DS_Store
 
 # 보고서 출력물 (중요!)
-reports/
+outputs/
 *.pdf
 *.html
 
@@ -71,3 +71,10 @@ htmlcov/
 # OS
 Thumbs.db
 desktop.ini
+
+# FAISS Index
+faiss_index/
+faiss_enriched_index/
+faiss_startup_index/
+faiss_market_index/
+

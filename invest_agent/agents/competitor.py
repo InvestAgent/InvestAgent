@@ -1,7 +1,8 @@
-# /agnet/competitor.py
-from typing import Dict, Any
+# agents/competitor.py
+from typing import Dict, Any, List, Tuple
 import json
 from datetime import datetime
+from pathlib import Path
 
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI
@@ -30,8 +31,13 @@ def extract_json_from_llm_response(text: str) -> dict:
         raise e
 
 
-def search_web_competitors(target: str, core_tech: str, max_results: int = 2, exclude_companies: list = None) -> list:
-    """웹 검색으로 경쟁사 발굴"""
+def search_web_competitors(target: str, core_tech: str, max_results: int = 2, exclude_companies: list = None) -> Tuple[list, list]:
+    """
+    웹 검색으로 경쟁사 발굴
+    
+    Returns:
+        (competitors, urls) 튜플
+    """
     if exclude_companies is None:
         exclude_companies = []
     
@@ -42,6 +48,10 @@ def search_web_competitors(target: str, core_tech: str, max_results: int = 2, ex
     
     try:
         results = search_tool.invoke({"query": search_query})
+        
+        # URL 수집
+        urls = [r.get("url", "") for r in results if r.get("url")]
+        
         context = "\n\n".join([
             f"[{r.get('title', 'N/A')}]\n{r.get('content', '')}"
             for r in results
@@ -76,11 +86,11 @@ def search_web_competitors(target: str, core_tech: str, max_results: int = 2, ex
                     "source": "web_search"
                 })
         
-        return web_competitors
+        return web_competitors, urls
         
     except Exception as e:
         print(f"❌ 웹 검색 실패: {e}")
-        return []
+        return [], []
 
 
 def select_relevant_bigtech(target: str, target_tech: dict) -> list:
@@ -116,15 +126,11 @@ def competitor_analysis(state: GraphState) -> GraphState:
     입력:
         - current_company: 타겟 기업명
         - tech: 기술 분석 결과
-        - market_eval: 시장 분석 결과 (선택)
+        - market_eval: 시장 분석 결과
     
     출력:
-        - competitor: {
-            company: str,
-            competitors_analysis: List[Dict],
-            swot: Dict,
-            generated_at: str
-          }
+        - competitor: {...}
+        - sources["competitor"]: 참고 출처
     """
     target = state.get("current_company", "Unknown")
     tech = state.get("tech", {})
@@ -133,48 +139,62 @@ def competitor_analysis(state: GraphState) -> GraphState:
     
     print(f"[경쟁사 분석] 시작: {target}")
     
+    # ===== 출처 수집 =====
+    competitor_sources = []
+    
     # 1. 경쟁사 발굴 (스타트업 2 + 대기업 2)
     startup_competitors = []
     
-    # Vector DB 시도
+    # Discovery FAISS 활용
     try:
         embeddings = HuggingFaceBgeEmbeddings(
             model_name="BAAI/bge-base-en-v1.5",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": True}
         )
-        vectorstore = FAISS.load_local(
-            "competitor_vectordb",
-            embeddings,
-            allow_dangerous_deserialization=True
-        )
         
-        search_query = f"{target} {tech_blk.get('core_technology', '')} AI startup"
-        docs = vectorstore.similarity_search(search_query, k=2)
+        faiss_path = Path("faiss_startup_index")  # ✅ Discovery 스타트업 DB
         
-        for doc in docs:
-            startup_competitors.append({
-                "company": doc.metadata.get("company", "Unknown"),
-                "focus": doc.metadata.get("focus", "N/A"),
-                "country": doc.metadata.get("country", "N/A"),
-                "source": "vectordb"
-            })
-        
-        print(f"  ✓ Vector DB: {len(startup_competitors)}개")
+        if faiss_path.exists():
+            vectorstore = FAISS.load_local(
+                str(faiss_path),
+                embeddings,
+                allow_dangerous_deserialization=True
+            )
+            
+            search_query = f"{target} {tech_blk.get('core_technology', '')} AI startup"
+            docs = vectorstore.similarity_search(search_query, k=3)
+            
+            for doc in docs:
+                comp_name = doc.metadata.get("startup_name", "Unknown")
+                
+                # 자기 자신 제외
+                if comp_name != target:
+                    startup_competitors.append({
+                        "company": comp_name,
+                        "focus": doc.metadata.get("industry", "N/A"),
+                        "country": doc.metadata.get("country", "N/A"),
+                        "source": "discovery_faiss"
+                    })
+            
+            print(f"  ✓ Discovery FAISS: {len(startup_competitors)}개")
+        else:
+            print(f"  ⚠️ Discovery FAISS 없음: {faiss_path}")
         
     except Exception as e:
         print(f"  ⚠ Vector DB 실패: {e}")
     
-    # 부족하면 웹 검색
+    # 부족하면 웹 검색 (URL 수집 포함)
     if len(startup_competitors) < 2:
         needed = 2 - len(startup_competitors)
-        web_comps = search_web_competitors(
+        web_comps, web_urls = search_web_competitors(
             target,
             tech_blk.get('core_technology', ''),
             max_results=needed,
             exclude_companies=[c["company"] for c in startup_competitors]
         )
         startup_competitors.extend(web_comps)
+        competitor_sources.extend(web_urls)
         print(f"  ✓ 웹 검색: {len(web_comps)}개 추가")
     
     # 대기업 2개
@@ -183,7 +203,7 @@ def competitor_analysis(state: GraphState) -> GraphState:
     
     all_competitors = startup_competitors[:2] + bigtech[:2]
     
-    # 2. 웹 리서치
+    # 2. 웹 리서치 (URL 수집)
     search_tool = TavilySearchResults(max_results=3)
     research_data = {}
     
@@ -193,12 +213,19 @@ def competitor_analysis(state: GraphState) -> GraphState:
             results = search_tool.invoke({
                 "query": f"{comp_name} AI product features customers"
             })
+            
+            # URL 수집
+            for r in results:
+                if r.get("url"):
+                    competitor_sources.append(r["url"])
+            
             context = "\n".join([r.get('content', '')[:200] for r in results])
             research_data[comp_name] = context
         except Exception as e:
             research_data[comp_name] = f"Focus: {comp.get('focus', 'N/A')}"
     
     print(f"  ✓ 웹 리서치 완료")
+    print(f"  ✓ 수집된 출처: {len(competitor_sources)}개")
     
     # 3. 경쟁 포지셔닝 분석
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
@@ -264,7 +291,12 @@ JSON 출력:
         "generated_at": datetime.now().isoformat()
     }
     
+    # State 업데이트
+    state_sources = state.get("sources", {})
+    state_sources["competitor"] = list(set(competitor_sources))  # 중복 제거
+    
     return {
         **state,
-        "competitor": output
+        "competitor": output,
+        "sources": state_sources
     }
