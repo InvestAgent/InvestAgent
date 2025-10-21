@@ -48,15 +48,12 @@
 
 
 
-### [참고] 📊 RAG 사용 위치
+#### [참고] 📊 RAG 사용 위치
 
-| 에이전트 | Retrieval | Vector DB | Generation |
-|---------|-----------|-----------|------------|
-| **Discovery** | Tavily + FAISS | `faiss_startup_index` | GPT-4o-mini |
-| **Tech** | Tavily (웹 검색만) | - | GPT-4o-mini |
-| **Market** | FAISS + Tavily | `faiss_market_index` | GPT-4o-mini |
-| **Competitor** | FAISS + Tavily | `faiss_startup_index` | GPT-4o-mini |
-| **Report** | - | - | GPT-4o-mini |
+| 에이전트 | Retrieval | Vector DB | 
+|---------|-----------|-----------|
+| **Market** | Tavily + FAISS | `faiss_market_index` | 
+| **Competitor** | FAISS + Tavily | `faiss_startup_index` | 
 
 
 
