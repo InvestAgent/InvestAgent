@@ -46,6 +46,20 @@
 
 ➡️ [에이전트 상세 설명 보기](./docs/agents.md)
 
+
+
+### [참고] 📊 RAG 사용 위치
+
+| 에이전트 | Retrieval | Vector DB | Generation |
+|---------|-----------|-----------|------------|
+| **Discovery** | Tavily + FAISS | `faiss_startup_index` | GPT-4o-mini |
+| **Tech** | Tavily (웹 검색만) | - | GPT-4o-mini |
+| **Market** | FAISS + Tavily | `faiss_market_index` | GPT-4o-mini |
+| **Competitor** | FAISS + Tavily | `faiss_startup_index` | GPT-4o-mini |
+| **Report** | - | - | GPT-4o-mini |
+
+
+
 ---
 
 ## 📊 투자 평가 개요
@@ -96,7 +110,7 @@
 
 | 스타트업 탐색 에이전트                                                                                                             | 시장성 평가 에이전트                                                                                                             | 기술 요약 에이전트                                                                                                                 | 보고서 생성 에이전트                                                                                                            | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/yeseul106) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
+| <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/gyeongsu01) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
  
 
 ---
