@@ -63,68 +63,7 @@
 
 | 항목 | 비중 | 주요 요소 |
 |------|------|-----------|
-| 📈 시장성 | 35% | TAM, CAGR, Problem-fit |
-| 🧠 기술력 | 25% | 성능, IP, 확장성 |
-| 🥊 경쟁우위 | 20% | 차별성, Moat, 포지셔닝 |
-| 💼 실적 | 10% | ARR, 파트너십, 펀딩 |
-| 💰 투자조건 | 10% | 밸류에이션, 지분 구조 |
-
-- **최종 점수 계산:** Final Score = Σ(영역 점수 × 가중치) – Risk Penalty
-
-- **판단 기준:**  
-  | 점수 | 판단 |
-  |------|------|
-  | ≥ 70 | ✅ 투자 권고 |
-  | 60 ~ 69 | ⚠️ 조건부 투자 |
-  | < 60 | ❌ 재검토 필요 |
-
-투자 판단 결과가 ‘투자 권고’일 때만 보고서를 자동 생성하며, 분석된 KPI·SWOT·차별화 포인트를 HTML → PDF로 변환하여 결과를 제공합니다.
-
----
-
-## 📂 Directory Structure
-
-```
-📂 investAgent/
-├── invest_agent/                 # 메인 패키지
-│   ├── agents/                   # 에이전트 모듈
-│   │   ├── report/               # 보고서 생성 서브모듈
-│   │   ├── competitor.py         # 경쟁사 분석 에이전트
-│   │   ├── discovery.py          # 기업 탐색 에이전트
-│   │   ├── invest.py             # 투자 판단 에이전트
-│   │   ├── market.py             # 시장 분석 에이전트
-│   │   └── tech.py               # 기술 분석 에이전트
-│   ├── __init__.py
-│   ├── run_smoke.py              # 실행 스크립트
-│   ├── states.py                 # LangGraph State 정의
-│   └── workflow.py               # LangGraph Workflow 정의
-│
-├── data/                         # 데이터 파일
-├── docs/                         # 문서
-├── draft/                        # 작업 초안
-├── images/                       # 이미지 파일
-├── scripts/                      # 유틸리티 스크립트
-│   └── build_market_vectordb.py  # 시장 DB 생성 스크립트
-│
-├── .gitignore
-├── app.py                        # 메인 애플리케이션
-├── README.md
-└── requirements.txt              # 의존성 패키
-```
-
-
----
-
-<details>
-  <summary><h3>🚀 보고서 예시 </h3></summary>
-
-![에이전트 아키텍처](images/보고서예시.png)
-</details>
-
-
-## 👥 Contributors
-
-| 스타트업 탐색 에이전트                                                                                                             | 시장성 평가 에이전트                                                                                                             | 기술 요약 에이전트                                                                                                                 | 보고서 생성 에이전트                                                                                                            | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
+| 📈합                                                                                                           | 경쟁사 비교 에이전트                                                                                                            | 투자 판단 에이전트                                                                                                           |
 | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | <img src="https://avatars.githubusercontent.com/YunCheol07" width=150px alt="곽윤철"/> [곽윤철](https://github.com/YunCheol07) | <img src="https://avatars.githubusercontent.com/gyeongsu01" width=150px alt="김경수"/> [김경수](https://github.com/gyeongsu01) | <img src="https://avatars.githubusercontent.com/kimhmin0814" width=150px alt="김형민"/> [김형민](https://github.com/kimhmin0814) | <img src="https://avatars.githubusercontent.com/sjisu7525" width=150px alt="송지수"/> [송지수](https://github.com/sjisu7525) | <img src="https://avatars.githubusercontent.com/chxiowxxk" width=150px alt="최영욱"/> [최영욱](https://github.com/chxiowxxk) | <img src="https://avatars.githubusercontent.com/gksl5355?v=5" width=150px alt="조태환"/> [조태환](https://github.com/gksl5355) |
  
